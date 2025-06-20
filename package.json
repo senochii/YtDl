@@ -1,9 +1,9 @@
 {
-  "name": "ytdl",
+  "name": "ytdl-nekochii",
   "version": "1.0.0",
-  "description": "",
+  "description": "A YouTube downloader service built with Express and ytdl-core",
   "main": "index.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "start": "node index.js"
   },
@@ -13,6 +13,7 @@
     "express": "latest",
     "form-data": "4.0.0",
     "cors": "latest",
+    "serve-favicon": "latest",
     "yt-search": "latest"
   }
 }

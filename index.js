@@ -1,17 +1,24 @@
-const express = require("express");
-const cors = require("cors");
-const fs = require("fs");
-const path = require("path");
-const ytdl = require("@distube/ytdl-core");
-const ytSearch = require("yt-search");
-const cp = require("child_process");
-const os = require("os");
+import express from "express";
+import cors from "cors";
+import fs from "fs";
+import path from "path";
+import ytdl from "@distube/ytdl-core";
+import ytSearch from "yt-search";
+import cp from "child_process";
+import os from "os";
+import favicon from "serve-favicon";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = 7860;
 
 app.use(cors());
 app.use(express.json());
+app.use(favicon(path.join(__dirname, "favicon.ico")));
 app.use(express.urlencoded({ extended: true }));
 
 const tempDir = path.join("/tmp", "public");
@@ -27,18 +34,8 @@ const formatBytes = (bytes) => {
 const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 const formatDate = (dateString) => {
   const months = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember",
   ];
   const date = new Date(dateString);
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
@@ -87,13 +84,12 @@ app.all("/", (_, res) => {
     message: id
       ? `Go to https://hf.co/spaces/${id}/discussions for discuss`
       : "Hello World!",
-    owner: "https://github.com/swndyy",
+    owner: "https://github.com/senochii",
     uptime: new Date(process.uptime() * 1000).toUTCString().split(" ")[4],
     status,
   });
 });
 
-// Route /video
 app.all("/video", async (req, res) => {
   const url = getParam(req, "url");
   if (!url || !ytdl.validateURL(url))
@@ -127,7 +123,6 @@ app.all("/video", async (req, res) => {
   }
 });
 
-// Route /audio
 app.all("/audio", async (req, res) => {
   const url = getParam(req, "url");
   if (!url || !ytdl.validateURL(url))
@@ -158,10 +153,9 @@ app.all("/audio", async (req, res) => {
   }
 });
 
-// Route /search
 app.all("/search", async (req, res) => {
-  const query = getParam(req, "q");
-  if (!query) return res.status(400).json({ error: "Parameter 'q' wajib diisi" });
+  const query = getParam(req, "query");
+  if (!query) return res.status(400).json({ error: "Parameter 'query' wajib diisi" });
   try {
     const result = await ytSearch(query);
     const videos = result.videos.map((video) => ({
