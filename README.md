@@ -36,7 +36,7 @@ npm install
 Example for downloading a video:
 
 ```bash
-curl "https://ytdl.Nekochii-ui.biz.id/video?url=https://www.youtube.com/watch?v=example"
+curl "https://nekochii-ytdl.hf.space/video?url=https://www.youtube.com/watch?v=example"
 ```
 
 ### 3️⃣ Arguments & Options
@@ -48,15 +48,15 @@ curl "https://ytdl.Nekochii-ui.biz.id/video?url=https://www.youtube.com/watch?v=
 Example:
 
 ```bash
-curl "https://ytdl.Nekochii-ui.biz.id/video?url=https://www.youtube.com/watch?v=example"
+curl "https://nekochii-ytdl.hf.space/video?url=https://www.youtube.com/watch?v=example"
 ```
 
 ---
 
 ## 📝 Documentation
 
-* 🌐 **Website:** [YtDl Main](https://ytdl.Nekochii-ui.biz.id)
-* 📚 **API Reference:** [Nekochii Api's](https://Nekochii-ui.biz.id)
+* 🌐 **Website:** [YtDl Main](https://nekochii-ytdl.hf.space)
+* 📚 **API Reference:** [Nekochii Api's](https://nekochii-ytdl.hf.space)
 
 ---
 
@@ -64,9 +64,9 @@ curl "https://ytdl.Nekochii-ui.biz.id/video?url=https://www.youtube.com/watch?v=
 
 Developed and Maintained by:
 
-* 👤 **Name:** SennNevertheless
-* 🐱 **GitHub:** [@SennaNetwork](https://github.com/senochii)
-* 📧 **Email:** [sennanetwork@gmail.com](mailto:sennanetwork@gmail.com)
+* 👤 **Name:** Senochiii
+* 🐱 **GitHub:** [@Seneko](https://github.com/senochii)
+* 📧 **Email:** [support@nekochii.com](support@archivends.my.id)
 
 ---
 
