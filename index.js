@@ -296,7 +296,7 @@ app.all("/video", async (req, res) => {
   const url = getParam(req, "url");
   if (!url) return res.status(400).json({ error: "URL tidak valid" });
   try {
-    const { title, downloadURL } = await y2mate.download(url, "mp4");
+    const { title, downloadURL } = await y2mate.download(url);
 
     const filename = `video-${Date.now()}.mp4`;
     const writePath = path.join(tempDir, filename);
@@ -322,7 +322,7 @@ app.all("/audio", async (req, res) => {
   const url = getParam(req, "url");
   if (!url) return res.status(400).json({ error: "URL tidak valid" });
   try {
-    const { title, downloadURL } = await y2mate.download(url, "mp3");
+    const { title, downloadURL } = await y2mate.download(url);
 
     const filename = `audio-${Date.now()}.mp3`;
     const writePath = path.join(tempDir, filename);
