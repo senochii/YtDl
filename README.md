@@ -1,6 +1,6 @@
 # 🐱🎵 YtDl‑Nekochii
 
-![YtDl-Nekochii](https://files.catbox.moe/ov32ud.jpg)
+![nyatube-dl](https://files.catbox.moe/ov32ud.jpg)
 
 > *Effortlessly download and manage YouTube videos with YtDl‑Nekochii.*
 
@@ -26,8 +26,8 @@
 Make sure **Node.js** and **npm** are installed, then run:
 
 ```bash
-git clone https://github.com/TanakaDomp/YtDl-Nekochii.git
-cd YtDl-Nekochii
+git clone https://github.com/senochii/nyatube-dl.git
+cd nyatube-dl
 npm install
 ```
 
@@ -73,7 +73,7 @@ Developed and Maintained by:
 ## 📂 Folder Structure
 
 ```
-YtDl-Nekochii/
+nyatube-dl/
 ├─ index.js           # Main app entry point
 ├─ cookie.json        # YouTube cookie for extracting data
 ├─ app.txt            # Usage documentation
@@ -94,6 +94,6 @@ YtDl-Nekochii/
 
 ## ❤️ Support
 
-If you find bugs or have feature requests, feel free to open an issue on [GitHub Issues](https://github.com/senochii/YtDl-Nekochii/issues).
+If you find bugs or have feature requests, feel free to open an issue on [GitHub Issues](https://github.com/senochii/nyatube-dl/issues).
 
 Thank you for using **YtDl‑Nekochii**! Enjoy downloading! 😺🎵

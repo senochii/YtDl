@@ -11,6 +11,7 @@
     "@distube/ytdl-core": "latest",
     "axios": "latest",
     "express": "latest",
+    "node-fetch": "*",
     "form-data": "4.0.0",
     "cors": "latest",
     "serve-favicon": "latest",
