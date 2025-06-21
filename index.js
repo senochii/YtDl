@@ -13,10 +13,10 @@ import { dirname } from "path";
 
 // Plan Scraper dimana ribet kalo pake ytdl-core disebabkan harus menggunakan cookies
 
-const y2mate = {
+ytmp3cc = {
     headers: {
-        "Referer": "https://y2mate.nu/",
-        "Origin": "https://y2mate.nu/",
+        "Referer": "https://ytmp3.cc/",
+        "Origin": "https://ytmp3.cc/",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
     },
 
@@ -26,7 +26,7 @@ const y2mate = {
             if (!listReturnType.includes(returnType)) throw Error(`return type ${returnType} is invalid. `)
             let result
             const response = await fetch(url, {
-                headers: y2mate.headers,
+                headers: ytmp3cc.headers,
             })
             const data = await response.text()
             result = data
@@ -48,9 +48,11 @@ const y2mate = {
     },
 
     getAuthCode: async () => {
-        console.log("[y2mate] downloading homepage")
+        // fetch html homepage, search for string js code contain value and eval it
+        // search for src path too and combine the path with new directed url
+        console.log("[ytmp3cc] downloading homepage ytmp3cc")
         
-        const {result: html, response} = await y2mate.hit("https://y2mate.nu","hit homepage y2mate")
+        const {result: html, response} = await ytmp3cc.hit("https://ytmp3.cc","hit homepage ytmp3cc")
         const valueOnHtml = html.match(/<script>(.*?)<\/script>/)?.[1]
         if (!valueOnHtml) throw Error(`gagal mendapatkan match regex untuk code value di html`)
 
@@ -65,12 +67,16 @@ const y2mate = {
 
         const url = new URL(response.url).origin + srcPath
 
-        console.log("[y2mate] downloading js file")
-        const {result : jsCode} = await y2mate.hit(url, "download js file y2mate")
+
+        // fetch js file, take function authorization code and replace some string..
+        // because it refer to html which cause error, eval new modified string to get auth code
+
+        console.log("[ytmp3cc] downloading js file ytmp3cc")
+        const {result : jsCode} = await ytmp3cc.hit(url, "download js file ytmp3")
         const authCode = jsCode.match(/authorization\(\){(.*?)}function/)?.[1]
         if (!authCode) throw Error(`gagal mendapatkan match regex untuk auth function code`)
 
-        const newAuthCode = authCode.replace("id(\"y2mate\").src", `"${url}"`)
+        const newAuthCode = authCode.replace("id(\"ytmp3\").src", `"${url}"`)
 
         let authString
         try {
@@ -83,6 +89,7 @@ const y2mate = {
     },
 
     getYoutubeId: async (youtubeUrl) => {
+        // capek gw regek jir wkwk bomat lah fetch head saja >:v
         console.log("[youtube.com] get video id from your youtube url")
         const headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0"
@@ -102,33 +109,49 @@ const y2mate = {
     },
 
     download: async (youtubeUrl, format="mp3") => {
+        // param validation
         const validFormats = ["mp3","mp4"]
         if(!validFormats.includes(format)) throw Error (`${format} is invalid format. available format ${validFormats.join(", ")}`)
+
+        // function
         const delay = async (ms) => new Promise(r => setTimeout(r,ms))
-        const { videoId, url } = await y2mate.getYoutubeId(youtubeUrl)
+
+        // getting video id and auth string    
+        const { videoId, url } = await ytmp3cc.getYoutubeId(youtubeUrl)
+        const authCode = await ytmp3cc.getAuthCode()
         
-        const authCode = await y2mate.getAuthCode()
-        console.log("[y2mate] hit init api")
+        //hit1
+        console.log("[ytmp3cc] hit init api")
         const url1 = `https://d.ecoe.cc/api/v1/init?a=${authCode}&_=${Math.random()}`
-        const {result: resultInit} = await y2mate.hit(url1, "init api", "json")
+        const {result: resultInit} = await ytmp3cc.hit(url1, "init api", "json")
         if (resultInit.error != "0") throw Error (`ada error di init api. proses di hentikan\n${resultInit}`)
-        console.log("[y2mate] hit convert url")
+
+        //hit2
+        console.log("[ytmp3cc] hit convert url")
         const url2 = new URL (resultInit.convertURL)
         url2.searchParams.append("v",videoId)
         url2.searchParams.append("f", format)
         url2.searchParams.append("_", Math.random())
-        const {result : resultConvert} = await y2mate.hit(url2, "hit convert", "json")
+        const {result : resultConvert} = await ytmp3cc.hit(url2, "hit convert", "json")
         let { downloadURL, progressURL, redirectURL, error: errorFromConvertUrl } = resultConvert
         if (errorFromConvertUrl) throw Error(`there was error found after fetch convertURL probably bad youtube video id`)
+
+
+        //hit2a (directed)
         if (redirectURL) {
-            ({ downloadURL, progressURL } = (await y2mate.hit(redirectURL, "fetch redirectURL","json")).result)
-            console.log(`[y2mate] got directed`)
+            ({ downloadURL, progressURL } = (await ytmp3cc.hit(redirectURL, "fetch redirectURL","json")).result)
+            console.log(`[ytmp3cc] got directed`)
         }
+
+        // create url3 and fetch3 wrapped in while loop
         let { error, progress, title } = {}
         while (progress != 3) {
+            // create url3
             const api3 = new URL(progressURL)
             api3.searchParams.append("_", Math.random());
-            ({ error, progress, title } = (await y2mate.hit(api3, "cek progressURL", "json")).result)
+
+            // fetch3
+            ({ error, progress, title } = (await ytmp3cc.hit(api3, "cek progressURL", "json")).result)
 
             let status = progress == 3 ? "UwU sukses 🎉" :
                 progress == 2 ? "(👉ﾟヮﾟ)👉 poke server" :
@@ -144,7 +167,7 @@ const y2mate = {
 
         const result = { title, downloadURL, url }
         return result
-    },
+    }
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -296,7 +319,7 @@ app.all("/video", async (req, res) => {
   const url = getParam(req, "url");
   if (!url) return res.status(400).json({ error: "URL tidak valid" });
   try {
-    const { title, downloadURL } = await y2mate.download(url);
+    const { title, downloadURL } = await ytmp3cc.download(url);
 
     const filename = `video-${Date.now()}.mp4`;
     const writePath = path.join(tempDir, filename);
@@ -322,7 +345,7 @@ app.all("/audio", async (req, res) => {
   const url = getParam(req, "url");
   if (!url) return res.status(400).json({ error: "URL tidak valid" });
   try {
-    const { title, downloadURL } = await y2mate.download(url);
+    const { title, downloadURL } = await ytmp3cc.download(url);
 
     const filename = `audio-${Date.now()}.mp3`;
     const writePath = path.join(tempDir, filename);
