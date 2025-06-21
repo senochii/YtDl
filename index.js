@@ -11,6 +11,37 @@ import favicon from "serve-favicon";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const app = express();
+const PORT = 7860;
+
+app.use(cors());
+app.use(express.json());
+app.use(favicon(path.join(__dirname, "favicon.ico")));
+app.use(express.urlencoded({ extended: true }));
+
+const tempDir = path.join("/tmp", "public");
+if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+app.use("/files", express.static(tempDir));
+
+const formatBytes = (bytes) => {
+  if (bytes === 0) return "0 Bytes";
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizes[i];
+};
+const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+const formatDate = (dateString) => {
+  const months = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+  ];
+  const date = new Date(dateString);
+  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+};
+
 // Plan Scraper dimana ribet kalo pake ytdl-core disebabkan harus menggunakan cookies
 
 const ytmp3cc = {
@@ -169,37 +200,6 @@ const ytmp3cc = {
         return result
     }
 }
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const app = express();
-const PORT = 7860;
-
-app.use(cors());
-app.use(express.json());
-app.use(favicon(path.join(__dirname, "favicon.ico")));
-app.use(express.urlencoded({ extended: true }));
-
-const tempDir = path.join("/tmp", "public");
-if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
-app.use("/files", express.static(tempDir));
-
-const formatBytes = (bytes) => {
-  if (bytes === 0) return "0 Bytes";
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizes[i];
-};
-const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-const formatDate = (dateString) => {
-  const months = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember",
-  ];
-  const date = new Date(dateString);
-  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-};
 
 // const getVideoInfo = async (url) => {
 //   const info = await ytdl.getInfo(url);
