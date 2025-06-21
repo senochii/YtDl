@@ -13,7 +13,7 @@ import { dirname } from "path";
 
 // Plan Scraper dimana ribet kalo pake ytdl-core disebabkan harus menggunakan cookies
 
-ytmp3cc = {
+const ytmp3cc = {
     headers: {
         "Referer": "https://ytmp3.cc/",
         "Origin": "https://ytmp3.cc/",
